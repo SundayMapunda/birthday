@@ -1,0 +1,891 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Happy Birthday 💕</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Raleway:wght@200;300;400&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            :root {
+                --blush: #f7c5d5;
+                --rose: #e8a0b7;
+                --lavender: #d4b8e0;
+                --soft-purple: #b89cc8;
+                --cream: #fdf6f9;
+                --deep-rose: #c06080;
+                --text: #5a3a4a;
+                --text-light: #8a6a7a;
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            html {
+                scroll-behavior: smooth;
+            }
+
+            body {
+                background: linear-gradient(
+                    135deg,
+                    #fdf0f5 0%,
+                    #f5eaf8 50%,
+                    #ede6f7 100%
+                );
+                font-family: "Raleway", sans-serif;
+                color: var(--text);
+                overflow-x: hidden;
+                min-height: 100vh;
+            }
+
+            /* ─── FLOATING HEARTS ─── */
+            #hearts-canvas {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 0;
+            }
+
+            /* ─── HERO ─── */
+            .hero {
+                position: relative;
+                z-index: 1;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                padding: 2rem;
+            }
+
+            .hero-tag {
+                font-family: "Raleway", sans-serif;
+                font-weight: 200;
+                font-size: 0.75rem;
+                letter-spacing: 0.4em;
+                text-transform: uppercase;
+                color: var(--soft-purple);
+                margin-bottom: 1.5rem;
+                opacity: 0;
+                animation: fadeUp 1s ease 0.3s forwards;
+            }
+
+            .hero-title {
+                font-family: "Cormorant Garamond", serif;
+                font-size: clamp(3.5rem, 10vw, 8rem);
+                font-weight: 300;
+                line-height: 1;
+                color: var(--deep-rose);
+                margin-bottom: 0.5rem;
+                opacity: 0;
+                animation: fadeUp 1s ease 0.6s forwards;
+            }
+
+            .hero-title em {
+                font-style: italic;
+                color: var(--soft-purple);
+            }
+
+            .hero-subtitle {
+                font-family: "Cormorant Garamond", serif;
+                font-size: clamp(1.1rem, 3vw, 1.8rem);
+                font-weight: 300;
+                font-style: italic;
+                color: var(--text-light);
+                margin-bottom: 3rem;
+                opacity: 0;
+                animation: fadeUp 1s ease 0.9s forwards;
+            }
+
+            .names-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 1rem;
+                background: rgba(255, 255, 255, 0.6);
+                backdrop-filter: blur(12px);
+                border: 1px solid rgba(232, 160, 183, 0.4);
+                border-radius: 100px;
+                padding: 0.75rem 2rem;
+                font-family: "Cormorant Garamond", serif;
+                font-size: 1.4rem;
+                color: var(--deep-rose);
+                opacity: 0;
+                animation: fadeUp 1s ease 1.2s forwards;
+            }
+
+            .names-badge .heart-icon {
+                color: var(--rose);
+                font-size: 1.1rem;
+            }
+
+            .scroll-hint {
+                position: absolute;
+                bottom: 2.5rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+                font-size: 0.65rem;
+                letter-spacing: 0.3em;
+                text-transform: uppercase;
+                color: var(--rose);
+                opacity: 0;
+                animation: fadeUp 1s ease 1.8s forwards;
+            }
+
+            .scroll-hint::after {
+                content: "";
+                width: 1px;
+                height: 40px;
+                background: linear-gradient(
+                    to bottom,
+                    var(--rose),
+                    transparent
+                );
+                animation: scrollLine 2s ease-in-out infinite;
+            }
+
+            @keyframes scrollLine {
+                0%,
+                100% {
+                    opacity: 0.3;
+                    transform: scaleY(1);
+                }
+                50% {
+                    opacity: 1;
+                    transform: scaleY(1.3);
+                }
+            }
+
+            /* ─── COUNTDOWN ─── */
+            .section {
+                position: relative;
+                z-index: 1;
+                padding: 5rem 2rem;
+                text-align: center;
+            }
+
+            .section-label {
+                font-family: "Raleway", sans-serif;
+                font-weight: 200;
+                font-size: 0.7rem;
+                letter-spacing: 0.5em;
+                text-transform: uppercase;
+                color: var(--soft-purple);
+                margin-bottom: 1rem;
+            }
+
+            .section-title {
+                font-family: "Cormorant Garamond", serif;
+                font-size: clamp(2rem, 5vw, 3.5rem);
+                font-weight: 300;
+                color: var(--deep-rose);
+                margin-bottom: 3rem;
+            }
+
+            /* Digital Clock */
+            .clock-wrapper {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: clamp(0.5rem, 2vw, 1.5rem);
+                flex-wrap: wrap;
+                margin-bottom: 1.5rem;
+            }
+
+            .clock-unit {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .clock-display {
+                position: relative;
+                background: linear-gradient(
+                    145deg,
+                    rgba(255, 255, 255, 0.9),
+                    rgba(247, 197, 213, 0.3)
+                );
+                border: 1px solid rgba(232, 160, 183, 0.5);
+                border-radius: 16px;
+                padding: clamp(0.8rem, 2vw, 1.2rem) clamp(1rem, 3vw, 1.8rem);
+                box-shadow:
+                    0 4px 24px rgba(192, 96, 128, 0.12),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+                    inset 0 -1px 0 rgba(192, 96, 128, 0.1);
+                backdrop-filter: blur(8px);
+                min-width: clamp(70px, 12vw, 110px);
+            }
+
+            .clock-display::before {
+                content: "";
+                position: absolute;
+                top: 50%;
+                left: 8px;
+                right: 8px;
+                height: 1px;
+                background: rgba(192, 96, 128, 0.15);
+                transform: translateY(-50%);
+            }
+
+            .clock-digit {
+                font-family: "Cormorant Garamond", serif;
+                font-size: clamp(2.5rem, 6vw, 4.5rem);
+                font-weight: 300;
+                color: var(--deep-rose);
+                line-height: 1;
+                letter-spacing: 0.05em;
+                text-shadow: 0 2px 8px rgba(192, 96, 128, 0.2);
+                transition: all 0.3s ease;
+            }
+
+            .clock-label {
+                font-family: "Raleway", sans-serif;
+                font-weight: 200;
+                font-size: 0.6rem;
+                letter-spacing: 0.4em;
+                text-transform: uppercase;
+                color: var(--text-light);
+            }
+
+            .clock-separator {
+                font-family: "Cormorant Garamond", serif;
+                font-size: clamp(2rem, 5vw, 3.5rem);
+                color: var(--rose);
+                opacity: 0.6;
+                margin-top: -1.5rem;
+                animation: pulse 1s ease-in-out infinite;
+            }
+
+            @keyframes pulse {
+                0%,
+                100% {
+                    opacity: 0.6;
+                }
+                50% {
+                    opacity: 0.15;
+                }
+            }
+
+            .birthday-msg {
+                font-family: "Cormorant Garamond", serif;
+                font-size: 1.5rem;
+                font-style: italic;
+                color: var(--deep-rose);
+                margin-top: 1rem;
+                display: none;
+            }
+
+            /* ─── LETTER ─── */
+            .letter-section {
+                max-width: 680px;
+                margin: 0 auto;
+                padding: 5rem 2rem;
+                position: relative;
+                z-index: 1;
+            }
+
+            .letter-card {
+                background: rgba(255, 255, 255, 0.65);
+                backdrop-filter: blur(20px);
+                border: 1px solid rgba(232, 160, 183, 0.35);
+                border-radius: 24px;
+                padding: 3.5rem;
+                box-shadow: 0 8px 48px rgba(192, 96, 128, 0.1);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .letter-card::before {
+                content: "❝";
+                position: absolute;
+                top: 1.5rem;
+                left: 2rem;
+                font-family: "Cormorant Garamond", serif;
+                font-size: 5rem;
+                color: var(--blush);
+                line-height: 1;
+                opacity: 0.5;
+            }
+
+            .letter-greeting {
+                font-family: "Cormorant Garamond", serif;
+                font-size: 1.3rem;
+                font-style: italic;
+                color: var(--soft-purple);
+                margin-bottom: 1.5rem;
+            }
+
+            .letter-body {
+                font-family: "Cormorant Garamond", serif;
+                font-size: 1.15rem;
+                line-height: 1.9;
+                color: var(--text);
+                font-weight: 300;
+                margin-bottom: 2rem;
+            }
+
+            .letter-sign {
+                font-family: "Cormorant Garamond", serif;
+                font-size: 1.1rem;
+                font-style: italic;
+                color: var(--deep-rose);
+                text-align: right;
+            }
+
+            /* ─── GALLERY ─── */
+            .gallery-section {
+                position: relative;
+                z-index: 1;
+                padding: 3rem 2rem 6rem;
+                text-align: center;
+            }
+
+            .gallery-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .gallery-item {
+                position: relative;
+                border-radius: 20px;
+                overflow: hidden;
+                aspect-ratio: 1;
+                background: linear-gradient(
+                    135deg,
+                    var(--blush),
+                    var(--lavender)
+                );
+                border: 2px solid rgba(255, 255, 255, 0.8);
+                box-shadow: 0 4px 20px rgba(192, 96, 128, 0.15);
+                cursor: pointer;
+                transition:
+                    transform 0.3s ease,
+                    box-shadow 0.3s ease;
+            }
+
+            .gallery-item:hover {
+                transform: scale(1.03) rotate(0.5deg);
+                box-shadow: 0 8px 32px rgba(192, 96, 128, 0.25);
+            }
+
+            .gallery-item:nth-child(2) {
+                margin-top: 1.5rem;
+            }
+            .gallery-item:nth-child(4) {
+                margin-top: -1.5rem;
+            }
+
+            .gallery-item img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+            }
+
+            .gallery-placeholder {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+                background: linear-gradient(
+                    135deg,
+                    rgba(247, 197, 213, 0.5),
+                    rgba(212, 184, 224, 0.5)
+                );
+            }
+
+            .gallery-placeholder .ph-icon {
+                font-size: 2rem;
+                opacity: 0.5;
+            }
+            .gallery-placeholder .ph-text {
+                font-family: "Raleway", sans-serif;
+                font-size: 0.65rem;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                color: var(--text-light);
+                opacity: 0.7;
+            }
+
+            /* Lightbox */
+            .lightbox {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(90, 58, 74, 0.85);
+                backdrop-filter: blur(8px);
+                z-index: 100;
+                align-items: center;
+                justify-content: center;
+            }
+            .lightbox.active {
+                display: flex;
+            }
+            .lightbox img {
+                max-width: 90vw;
+                max-height: 85vh;
+                border-radius: 20px;
+                box-shadow: 0 20px 80px rgba(0, 0, 0, 0.4);
+            }
+            .lightbox-close {
+                position: absolute;
+                top: 1.5rem;
+                right: 1.5rem;
+                background: rgba(255, 255, 255, 0.15);
+                border: none;
+                color: white;
+                font-size: 1.5rem;
+                width: 44px;
+                height: 44px;
+                border-radius: 50%;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* ─── FOOTER ─── */
+            .footer {
+                position: relative;
+                z-index: 1;
+                text-align: center;
+                padding: 3rem 2rem;
+                font-family: "Cormorant Garamond", serif;
+                font-size: 1rem;
+                font-style: italic;
+                color: var(--text-light);
+            }
+
+            /* ─── ANIMATIONS ─── */
+            @keyframes fadeUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(24px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .reveal {
+                opacity: 0;
+                transform: translateY(30px);
+                transition:
+                    opacity 0.8s ease,
+                    transform 0.8s ease;
+            }
+            .reveal.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            /* Music button */
+            .music-btn {
+                position: fixed;
+                top: 1.5rem;
+                right: 1.5rem;
+                z-index: 50;
+                background: rgba(255, 255, 255, 0.7);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(232, 160, 183, 0.5);
+                border-radius: 50%;
+                width: 48px;
+                height: 48px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                font-size: 1.2rem;
+                box-shadow: 0 4px 16px rgba(192, 96, 128, 0.15);
+                transition: transform 0.2s ease;
+            }
+            .music-btn:hover {
+                transform: scale(1.1);
+            }
+
+            /* Divider */
+            .divider {
+                position: relative;
+                z-index: 1;
+                text-align: center;
+                padding: 1rem;
+                color: var(--rose);
+                font-size: 1.2rem;
+                letter-spacing: 0.8em;
+                opacity: 0.5;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Music -->
+        <button class="music-btn" id="musicBtn" title="Toggle music">🎵</button>
+        <audio id="bgMusic" loop>
+            <!-- Using a royalty-free ambient music URL -->
+            <source src="mi-amor.mp3" type="audio/mpeg" />
+        </audio>
+
+        <!-- Floating Hearts Canvas -->
+        <canvas id="hearts-canvas"></canvas>
+
+        <!-- HERO -->
+        <section class="hero">
+            <p class="hero-tag">A little something, just for you</p>
+            <h1 class="hero-title">You & Me<br /><em>Always</em></h1>
+            <p class="hero-subtitle">One beautiful story</p>
+            <div class="names-badge">
+                <span>NEVER MWANG'ONDA</span>
+                <!--<span class="heart-icon">♥</span>
+                <span>Her Name</span>-->
+            </div>
+            <div class="scroll-hint">Scroll</div>
+        </section>
+
+        <div class="divider">· · ♥ · ·</div>
+
+        <!-- COUNTDOWN -->
+        <section class="section reveal">
+            <p class="section-label">Counting down to</p>
+            <h2 class="section-title">Our Special Day 🎂</h2>
+            <div class="clock-wrapper">
+                <div class="clock-unit">
+                    <div class="clock-display">
+                        <div class="clock-digit" id="cd-days">00</div>
+                    </div>
+                    <span class="clock-label">Days</span>
+                </div>
+                <div class="clock-separator">:</div>
+                <div class="clock-unit">
+                    <div class="clock-display">
+                        <div class="clock-digit" id="cd-hours">00</div>
+                    </div>
+                    <span class="clock-label">Hours</span>
+                </div>
+                <div class="clock-separator">:</div>
+                <div class="clock-unit">
+                    <div class="clock-display">
+                        <div class="clock-digit" id="cd-mins">00</div>
+                    </div>
+                    <span class="clock-label">Minutes</span>
+                </div>
+                <div class="clock-separator">:</div>
+                <div class="clock-unit">
+                    <div class="clock-display">
+                        <div class="clock-digit" id="cd-secs">00</div>
+                    </div>
+                    <span class="clock-label">Seconds</span>
+                </div>
+            </div>
+            <p class="birthday-msg" id="bday-msg">
+                🎂 Happy Birthday to us, my love! 🎂
+            </p>
+            <p
+                style="
+                    font-family: &quot;Cormorant Garamond&quot;, serif;
+                    font-style: italic;
+                    color: var(--text-light);
+                    font-size: 1rem;
+                    margin-top: 0.5rem;
+                "
+            >
+                August 12th — our shared birthday ✨
+            </p>
+        </section>
+
+        <div class="divider">· · ♥ · ·</div>
+
+        <!-- LOVE LETTER -->
+        <div class="letter-section reveal">
+            <p class="section-label" style="text-align: center">
+                From my heart
+            </p>
+            <h2
+                class="section-title"
+                style="text-align: center; margin-bottom: 2rem"
+            >
+                A Letter for You
+            </h2>
+            <div class="letter-card">
+                <p class="letter-greeting">Baby,</p>
+                <p class="letter-body">
+                    There are so many things I want to tell you, but words
+                    always feel too small for what I feel. Every day with you is
+                    a gift I never expected — your laugh, your warmth, the way
+                    you make ordinary moments feel like magic.<br /><br />
+                    And isn't it something? That we share a birthday. As if the
+                    universe quietly planned for us to arrive in this world on
+                    the same day, already moving toward each other.<br /><br />
+                    I made this little corner of the internet just for you — to
+                    say: I love you, I'm grateful for you, and I can't wait to
+                    celebrate another trip around the sun by your side.
+                </p>
+                <p class="letter-sign">Me 💕</p>
+            </div>
+        </div>
+
+        <div class="divider">· · ♥ · ·</div>
+
+        <!-- GALLERY -->
+        <div class="gallery-section reveal">
+            <p class="section-label">Our moments</p>
+            <h2 class="section-title">Us, in pictures</h2>
+            <div class="gallery-grid" id="gallery">
+                <!-- Photos 1-4 — replace src with real photos -->
+                <div class="gallery-item">
+                    <div class="gallery-placeholder">
+                        <span class="ph-icon">📸</span>
+                        <span class="ph-text">Photo 1</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-placeholder">
+                        <span class="ph-icon">📸</span>
+                        <span class="ph-text">Photo 2</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-placeholder">
+                        <span class="ph-icon">📸</span>
+                        <span class="ph-text">Photo 3</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-placeholder">
+                        <span class="ph-icon">📸</span>
+                        <span class="ph-text">Photo 4</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lightbox -->
+        <div class="lightbox" id="lightbox">
+            <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+            <img src="" id="lightbox-img" alt="" />
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <p>Made with love, just for you 💕</p>
+        </footer>
+
+        <script>
+            // ─── FLOATING HEARTS ───
+            const canvas = document.getElementById("hearts-canvas");
+            const ctx = canvas.getContext("2d");
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener("resize", resize);
+
+            class Heart {
+                constructor() {
+                    this.reset(true);
+                }
+                reset(init = false) {
+                    this.x = Math.random() * canvas.width;
+                    this.y = init
+                        ? Math.random() * canvas.height
+                        : canvas.height + 20;
+                    this.size = 8 + Math.random() * 18;
+                    this.speed = 0.4 + Math.random() * 0.8;
+                    this.opacity = 0.08 + Math.random() * 0.2;
+                    this.drift = (Math.random() - 0.5) * 0.5;
+                    this.wobble = Math.random() * Math.PI * 2;
+                    this.wobbleSpeed = 0.01 + Math.random() * 0.02;
+                    const hues = [
+                        "#f7c5d5",
+                        "#e8a0b7",
+                        "#d4b8e0",
+                        "#c06080",
+                        "#b89cc8",
+                    ];
+                    this.color = hues[Math.floor(Math.random() * hues.length)];
+                }
+                draw() {
+                    ctx.save();
+                    ctx.globalAlpha = this.opacity;
+                    ctx.fillStyle = this.color;
+                    ctx.translate(this.x, this.y);
+                    const s = this.size;
+                    ctx.beginPath();
+                    ctx.moveTo(0, s * 0.35);
+                    ctx.bezierCurveTo(0, 0, -s * 0.5, 0, -s * 0.5, -s * 0.25);
+                    ctx.bezierCurveTo(
+                        -s * 0.5,
+                        -s * 0.6,
+                        0,
+                        -s * 0.6,
+                        0,
+                        -s * 0.25,
+                    );
+                    ctx.bezierCurveTo(
+                        0,
+                        -s * 0.6,
+                        s * 0.5,
+                        -s * 0.6,
+                        s * 0.5,
+                        -s * 0.25,
+                    );
+                    ctx.bezierCurveTo(s * 0.5, 0, 0, 0, 0, s * 0.35);
+                    ctx.fill();
+                    ctx.restore();
+                }
+                update() {
+                    this.wobble += this.wobbleSpeed;
+                    this.x += this.drift + Math.sin(this.wobble) * 0.3;
+                    this.y -= this.speed;
+                    if (this.y < -30) this.reset();
+                }
+            }
+
+            const hearts = Array.from({ length: 28 }, () => new Heart());
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                hearts.forEach((h) => {
+                    h.update();
+                    h.draw();
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+
+            // ─── COUNTDOWN ───
+            function updateCountdown() {
+                const now = new Date();
+                const year =
+                    now.getMonth() > 1 ||
+                    (now.getMonth() === 1 && now.getDate() >= 2)
+                        ? now.getFullYear() + 1
+                        : now.getFullYear();
+                const target = new Date(year, 1, 2, 0, 0, 0); // Feb=1, so month=1 is Feb; March=2 → month=2
+                // Fix: March is month index 2
+                const targetDate = new Date(now.getFullYear(), 2, 2, 0, 0, 0);
+                const diff = targetDate - now;
+
+                if (diff <= 0) {
+                    // It's the birthday!
+                    document.getElementById("cd-days").textContent = "00";
+                    document.getElementById("cd-hours").textContent = "00";
+                    document.getElementById("cd-mins").textContent = "00";
+                    document.getElementById("cd-secs").textContent = "00";
+                    document.getElementById("bday-msg").style.display = "block";
+                    return;
+                }
+
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor(
+                    (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+                );
+                const mins = Math.floor(
+                    (diff % (1000 * 60 * 60)) / (1000 * 60),
+                );
+                const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+                const pad = (n) => String(n).padStart(2, "0");
+                document.getElementById("cd-days").textContent = pad(days);
+                document.getElementById("cd-hours").textContent = pad(hours);
+                document.getElementById("cd-mins").textContent = pad(mins);
+                document.getElementById("cd-secs").textContent = pad(secs);
+            }
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+
+            // ─── SCROLL REVEAL ───
+            const reveals = document.querySelectorAll(".reveal");
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((e) => {
+                        if (e.isIntersecting) {
+                            e.target.classList.add("visible");
+                        }
+                    });
+                },
+                { threshold: 0.15 },
+            );
+            reveals.forEach((r) => observer.observe(r));
+
+            // ─── MUSIC ───
+            const music = document.getElementById("bgMusic");
+            const btn = document.getElementById("musicBtn");
+            let playing = false;
+
+            function startMusic() {
+                if (!playing) {
+                    music
+                        .play()
+                        .then(() => {
+                            playing = true;
+                            btn.textContent = "🔇";
+                        })
+                        .catch(() => {});
+                }
+                document.removeEventListener("click", startMusic);
+                document.removeEventListener("scroll", startMusic);
+                document.removeEventListener("touchstart", startMusic);
+            }
+
+            // Autoplay on first interaction
+            document.addEventListener("click", startMusic);
+            document.addEventListener("scroll", startMusic);
+            document.addEventListener("touchstart", startMusic);
+
+            btn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                if (playing) {
+                    music.pause();
+                    btn.textContent = "🎵";
+                    playing = false;
+                } else {
+                    music.play().catch(() => {});
+                    btn.textContent = "🔇";
+                    playing = true;
+                }
+            });
+
+            // ─── LIGHTBOX ───
+            document.querySelectorAll(".gallery-item").forEach((item) => {
+                item.addEventListener("click", () => {
+                    const img = item.querySelector("img");
+                    if (img) {
+                        document.getElementById("lightbox-img").src = img.src;
+                        document
+                            .getElementById("lightbox")
+                            .classList.add("active");
+                    }
+                });
+            });
+
+            function closeLightbox() {
+                document.getElementById("lightbox").classList.remove("active");
+            }
+
+            document
+                .getElementById("lightbox")
+                .addEventListener("click", function (e) {
+                    if (e.target === this) closeLightbox();
+                });
+        </script>
+    </body>
+</html>
